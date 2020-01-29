@@ -1,0 +1,55 @@
+spring:
+  mail:
+    host: smtp.ukl.uni-freiburg.de
+    port: 465
+    properties:
+      mail:
+        debug: true
+        smtp:
+          starttls.enable: true
+          ssl.trust: smtp.ukl.uni-freiburg.de
+          auth: false
+    protocol: smtps
+watcher:
+  dirToWatch: file:Z:/test/*.pdf
+  appendToPrevPageDetectionThreshold: 3
+
+  moveProcessedFiles: true
+  processedFilesDir: file:Z:/test/processed
+
+  moveOriginalFiles: true
+  originalFilesDir: file:Z:/test/original
+
+  uploadData: true
+  uploadTarget: xxxx/
+
+  errorAddresses:
+    - andreas.glatz@uniklinik-freiburg.de
+
+  splitImages:
+    - x: 0
+      y: 4500
+      width: 700
+      height: -1
+      jsonTag: documentNumber
+    - x: 0
+      y: 0
+      width: 1500
+      height: 1500
+      jsonTag: piz
+    - x: 3000
+      y: 2400
+      width: -1
+      height: 600
+      jsonTag: caseNumber
+    - x: 1500
+      y: 5000
+      width: 1000
+      height: -1
+      jsonTag: qr
+logging:
+  level:
+    root: error
+    com:
+      patho:
+        filewatcher: DEBUG
