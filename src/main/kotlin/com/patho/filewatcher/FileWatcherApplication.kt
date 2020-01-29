@@ -20,7 +20,8 @@ class FileWatcherApplication @Autowired constructor(
         private val watcher: WatcherService,
         private val mailService: MailService,
         private val mailSender: JavaMailSender,
-        private val config: Config) : CommandLineRunner {
+        private val config: Config,
+        private val restService: RestService) : CommandLineRunner {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -45,6 +46,9 @@ class FileWatcherApplication @Autowired constructor(
             val json = results.map { it.getJson() }
             json.forEach { println(it) }
 
+            results.forEach {
+                restService.uploadFile(it, config.uploadTarget)
+            }
 
         } else
             logger.error("No file found! End program")

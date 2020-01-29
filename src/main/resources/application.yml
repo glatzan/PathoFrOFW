@@ -21,7 +21,9 @@ watcher:
   originalFilesDir: file:Z:/test/original
 
   uploadData: true
-  uploadTarget: xxxx/
+  uploadTarget: 127.0.0.1:8080/rest/pdf
+  secrectHeader: Authorization
+  secrectToken: "Bearer "
 
   errorAddresses:
     - andreas.glatz@uniklinik-freiburg.de

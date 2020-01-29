@@ -20,6 +20,7 @@ class RestService {
 
         val headers = HttpHeaders()
         headers.contentType = MediaType.MULTIPART_FORM_DATA
+        headers.set("Authorization", "Bearer "+accessToken);
         val requestEntity: HttpEntity<MultiValueMap<String, Any>> = HttpEntity(bodyMap, headers)
 
         logger.debug("Sending pdf (${pdf.target}) to $targetURl")
