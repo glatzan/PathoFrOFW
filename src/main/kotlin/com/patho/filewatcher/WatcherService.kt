@@ -181,7 +181,7 @@ open class WatcherService @Autowired constructor(
         val qrNumber = pdf.tags["qr"]
 
         // getting case number from barcode
-        if (caseNumber.isNullOrEmpty() && caseNumber?.matches(Regex("[0-9]{6,}")) == true) {
+        if (!caseNumber.isNullOrEmpty() && caseNumber?.matches(Regex("[0-9]{6,}"))) {
             pdf.target = caseNumber
             return true
         } else {
