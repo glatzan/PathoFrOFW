@@ -45,7 +45,7 @@ class MainService @Autowired constructor(
             }
 
         } else
-            logger.error("No file found! End")
+            logger.debug("No file found! End")
 
         logger.debug("----------------------------")
         logger.debug("---------- End -------------")

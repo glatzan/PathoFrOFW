@@ -166,7 +166,9 @@ open class WatcherService @Autowired constructor(
 
         try {
             FileUtils.writeByteArrayToFile(getResource(targetFile).file, pdf.pdfAsByts)
-            FileUtils.writeStringToFile(getResource(targetFile.replace(".pdf", ".json")).file, pdf.getJson(), Charset.forName("UTF8"))
+            val targetJson = targetFile.replace(".pdf", ".json");
+            val subFolderJson = targetJson.substringBeforeLast("/") +"/json/"+targetJson.substringAfterLast("/")
+            FileUtils.writeStringToFile(getResource(subFolderJson).file, pdf.getJson(), Charset.forName("UTF8"))
         } catch (e: IOException) {
             e.printStackTrace()
         } finally {
