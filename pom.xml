@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.patho</groupId>
     <artifactId>filewatcher</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>FileWatcher</name>
     <description>PathFroH FileWatcher</description>
 
