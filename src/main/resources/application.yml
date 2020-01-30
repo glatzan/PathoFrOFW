@@ -54,6 +54,11 @@ watcher:
       height: -1
       jsonTag: qr
 logging:
+  path: logs
+  file: "logs/watcher.log"
+  pattern:
+    file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"
+
   level:
     root: error
     com:
