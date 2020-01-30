@@ -112,7 +112,7 @@ open class WatcherService @Autowired constructor(
                     if (fileResult.size > 0) {
                         logger.debug("Page $i ## Is back page of old document")
                         val last = fileResult.last()
-                        last?.pages.addAll(pdfPageResult!!.pages)
+                        last.pages.addAll(pdfPageResult.pages)
                     } else {
                         logger.error("Page $i ## Is back page of old document, error no old document found!")
                         fileResult.add(pdfPageResult)
@@ -215,8 +215,8 @@ open class WatcherService @Autowired constructor(
 
     open fun readCode(image: BufferedImage): String? {
 
-        val hints = hashMapOf<DecodeHintType, Object>();
-        hints[DecodeHintType.TRY_HARDER] = true as Object;
+        val hints = hashMapOf<DecodeHintType, Any>();
+        hints[DecodeHintType.TRY_HARDER] = true as Any;
 
         val source: LuminanceSource = BufferedImageLuminanceSource(image)
         val bitmap = BinaryBitmap(HybridBinarizer(source))

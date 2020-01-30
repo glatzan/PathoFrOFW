@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import java.lang.Exception
 
 @Service
 class RestService {
@@ -31,12 +32,16 @@ class RestService {
 
         logger.debug("Sending pdf (${pdf.target}) to $targetURl")
 
-        val restTemplate = RestTemplate()
-        val response: ResponseEntity<String> = restTemplate.exchange(targetURl,
-                HttpMethod.POST, requestEntity, String::class.java)
-
-        logger.debug("response status: " + response.statusCode)
-        logger.debug("response body: " + response.body)
-        return response.statusCode.toString() == "200 OK"
+        return try  {
+            val restTemplate = RestTemplate()
+            val response: ResponseEntity<String> = restTemplate.exchange(targetURl,
+                    HttpMethod.POST, requestEntity, String::class.java)
+            logger.debug("response status: " + response.statusCode)
+            logger.debug("response body: " + response.body)
+            response.statusCode.toString() == "200 OK"
+        }catch (e : Exception){
+            logger.debug("Failed!")
+            false
+        }
     }
 }
