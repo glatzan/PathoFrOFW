@@ -23,7 +23,9 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.*
 
 
 @Service
@@ -146,14 +148,14 @@ open class WatcherService @Autowired constructor(
         val document = PDDocument()
 
         pdf.pages.forEach { document.addPage(it.getPage(0)) }
-        var valid = true
         val targetFile = if (validate(pdf)) {
-            val otherFiles = getFilesOFWatchDir("$processedFilesDir/${pdf.target}*")
-            val name = pdf.target + (if (otherFiles.isNotEmpty()) "_N_" + otherFiles.size else "") + ".pdf"
+            val otherFiles = getFilesOFWatchDir("$processedFilesDir/*${pdf.target}*")
+            val name = "${SimpleDateFormat("yyyy-MM-dd--HH-mm-ss").format(Date())}_${pdf.target}" + (if (otherFiles.isNotEmpty()) "_N_" + otherFiles.size else "") + ".pdf"
+            pdf.valid = true
             "$processedFilesDir/$name"
         } else {
-            val name = "ERROR_${System.currentTimeMillis()}.pdf"
-            valid = false
+            val name = "${SimpleDateFormat("yyyy-MM-dd--HH-mm-ss").format(Date())}_${pdf.target}.pdf"
+            pdf.valid = false
             "$processedFilesDir/$name"
         }
 
@@ -165,8 +167,6 @@ open class WatcherService @Autowired constructor(
         try {
             FileUtils.writeByteArrayToFile(getResource(targetFile).file, pdf.pdfAsByts)
             FileUtils.writeStringToFile(getResource(targetFile.replace(".pdf", ".json")).file, pdf.getJson(), Charset.forName("UTF8"))
-            if (!valid)
-                mailService.sendMail(config.errorAddresses.first(), "Fehler PDF nicht zugeordnet", "", pdf)
         } catch (e: IOException) {
             e.printStackTrace()
         } finally {
@@ -194,7 +194,7 @@ open class WatcherService @Autowired constructor(
         }
 
         logger.error("! No TaskNumber Found !")
-        pdf.target = System.currentTimeMillis().toString()
+        pdf.target = "_Fehler"
         return false
     }
 

@@ -4,7 +4,7 @@ spring:
     port: 465
     properties:
       mail:
-        debug: true
+        debug: false
         smtp:
           starttls.enable: true
           ssl.trust: smtp.ukl.uni-freiburg.de
@@ -21,12 +21,16 @@ watcher:
   originalFilesDir: file:Z:/test/original
 
   uploadData: true
-  uploadTarget: 127.0.0.1:8080/rest/pdf
-  secrectHeader: Authorization
-  secrectToken: "Bearer "
+  uploadTarget: http://127.0.0.1:8080/rest/pdf
+  useAuthentication: true
+  authenticationToken: ""
 
   errorAddresses:
     - andreas.glatz@uniklinik-freiburg.de
+
+  schedule:
+    enable: true
+    cron: "1 * * * * *"
 
   splitImages:
     - x: 0

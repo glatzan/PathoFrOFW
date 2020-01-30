@@ -25,12 +25,23 @@ class Config {
 
     lateinit var errorAddresses : List<String>
 
+    var useAuthentication : Boolean = false
+
+    lateinit var authenticationToken : String
+
+    var schedule = ScheduleSettings()
+
     class SubImageBorders {
         var x: Int = 0
         var y: Int = 0
         var width: Int = 0
         var height: Int = 0
         lateinit var jsonTag: String
+    }
+
+    class ScheduleSettings{
+        var enable : Boolean = false
+        lateinit var cron : String
     }
 
 
