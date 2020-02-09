@@ -1,4 +1,4 @@
-package com.patho.filewatcher
+package com.patho.filewatcher.model
 
 import org.springframework.core.io.ByteArrayResource
 

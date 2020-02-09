@@ -1,5 +1,6 @@
-package com.patho.filewatcher
+package com.patho.filewatcher.service
 
+import com.patho.filewatcher.model.PDFPageResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.mail.SimpleMailMessage
@@ -20,7 +21,7 @@ class MailService @Autowired constructor(
         emailSender.send(message)
     }
 
-    fun sendMail(to: String, subject: String, text: String, pdf :PDFPageResult) {
+    fun sendMail(to: String, subject: String, text: String, pdf : PDFPageResult) {
         val message = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true)
 

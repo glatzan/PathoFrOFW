@@ -1,8 +1,9 @@
-package com.patho.filewatcher
+package com.patho.filewatcher.service
 
+import com.patho.filewatcher.model.MultiPartResource
+import com.patho.filewatcher.model.PDFPageResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap

@@ -1,8 +1,10 @@
-package com.patho.filewatcher
+package com.patho.filewatcher.service
 
 import com.google.zxing.*
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource
 import com.google.zxing.common.HybridBinarizer
+import com.patho.filewatcher.Config
+import com.patho.filewatcher.model.PDFPageResult
 import org.apache.commons.io.FileUtils
 import org.apache.pdfbox.cos.COSDictionary
 import org.apache.pdfbox.multipdf.PDFCloneUtility
@@ -32,30 +34,48 @@ import java.util.*
 open class WatcherService @Autowired constructor(
         private val resourceLoader: ResourceLoader,
         private val mailService: MailService,
-        private val config: Config) {
+        private val config: Config,
+        private val restService: RestService) {
 
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    fun getFolder(path: String): String {
-        val year = LocalDate.now().year.toString()
-        return path.replace("{year}", year)
-    }
+    public fun watchDir() {
+        logger.debug("----------------------------")
+        logger.debug("--------- Start ------------")
+        logger.debug("----------------------------")
 
-    fun getResource(path: String): Resource {
-        return resourceLoader.getResource(getFolder(path))
-    }
+        logger.debug("appendToPrevPageDetectionThreshold = ${config.appendToPrevPageDetectionThreshold}")
+        logger.debug("Getting files of dir ${config.dirToWatch}")
 
-    open fun getFilesOFWatchDir(dir: String): List<Resource> {
-        return try {
-            val files = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(getFolder(dir))
-            files.toList()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            listOf()
-        }
-    }
 
-    var keepOriginalFiles = false
+        val files = getFilesOFWatchDir(config.dirToWatch)
+
+        if (files.isNotEmpty()) {
+            files.forEach { logger.debug("Found file -> ${it.filename}") }
+
+            logger.debug("Reading PDFs")
+            val results = processPDFs(files.map { it.file }, config.moveProcessedFiles,
+                    config.processedFilesDir, config.moveOriginalFiles, config.originalFilesDir)
+
+            results.forEach {
+                if (it.valid) {
+                    val result = restService.uploadFile(it, config.uploadTarget, config.useAuthentication, config.authenticationToken)
+                    if (!result) {
+                        mailService.sendMail(config.errorAddresses.first(), "Fehler beim hochladen des PDFs", "", it)
+                    }
+                } else {
+                    logger.debug("Not valid pdf sending mail")
+                    mailService.sendMail(config.errorAddresses.first(), "Fehler PDF nicht zugeordnet", "", it)
+                }
+            }
+
+        } else
+            logger.debug("No file found! End")
+
+        logger.debug("----------------------------")
+        logger.debug("---------- End -------------")
+        logger.debug("----------------------------")
+    }
 
     open fun processPDFs(files: List<File>, saveProcessedFiles: Boolean, processedFilesDir: String, moveOriginalFiles: Boolean, originalFilesDir: String): MutableList<PDFPageResult> {
 
@@ -213,7 +233,7 @@ open class WatcherService @Autowired constructor(
         return im.getSubimage(x, y, width, height)
     }
 
-    open fun readCode(image: BufferedImage): String? {
+    private fun readCode(image: BufferedImage): String? {
 
         val hints = hashMapOf<DecodeHintType, Any>();
         hints[DecodeHintType.TRY_HARDER] = true as Any;
@@ -227,6 +247,25 @@ open class WatcherService @Autowired constructor(
             result.text
         } catch (e: NotFoundException) {
             null
+        }
+    }
+
+    private fun getFolder(path: String): String {
+        val year = LocalDate.now().year.toString()
+        return path.replace("{year}", year)
+    }
+
+    private fun getResource(path: String): Resource {
+        return resourceLoader.getResource(getFolder(path))
+    }
+
+    private fun getFilesOFWatchDir(dir: String): List<Resource> {
+        return try {
+            val files = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(getFolder(dir))
+            files.toList()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            listOf()
         }
     }
 }

@@ -1,8 +1,8 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <configuration>
-    <appender name = "STDOUT" class = "ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%d{yyyy-MM-dd'T'HH:mm:ss.sss'Z'}] [%C] [%t] [%L] [%-5p] %m%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -10,7 +10,7 @@
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}${LOG_FILE}-%d{yyyy-MM-dd}.html
+            <fileNamePattern>log/watcher-%d{yyyy-MM-dd}.html
             </fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
@@ -21,11 +21,14 @@
         </triggeringPolicy>
         <encoder
                 class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>%d{HH:mm:ss.SSS}%thread%level%logger%msg</pattern>
+            </layout>
         </encoder>
     </appender>
 
     <logger name="com.patho.filewatcher" level="debug">
-        <appender-ref ref = "STDOUT"/>
-        <appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
     </logger>
 </configuration>

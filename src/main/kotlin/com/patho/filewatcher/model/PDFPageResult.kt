@@ -1,7 +1,7 @@
-package com.patho.filewatcher
+package com.patho.filewatcher.model
 
+import com.google.gson.Gson
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.json.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -74,7 +74,7 @@ class PDFPageResult {
     }
 
     fun getJson(): String {
-        val jo = JSONObject(tags)
+        val jo = Gson().toJson(tags)
         return jo.toString()
     }
 }

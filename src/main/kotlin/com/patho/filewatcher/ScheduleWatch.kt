@@ -1,5 +1,6 @@
 package com.patho.filewatcher
 
+import com.patho.filewatcher.service.WatcherService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +13,7 @@ import java.util.*
 @Service
 @ConditionalOnProperty(name = ["watcher.schedule.enable"], havingValue = "true")
 open class ScheduleWatch @Autowired constructor(
-        private val mainService: MainService) {
+        private val watcher: WatcherService) {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -21,6 +22,6 @@ open class ScheduleWatch @Autowired constructor(
         val dateFormat = SimpleDateFormat("HH:mm:ss");
         logger.info("The time is now {}", dateFormat.format(Date()))
         logger.info("Starting scheduled watch of dir")
-        mainService.watchDir()
+        watcher.watchDir()
     }
 }

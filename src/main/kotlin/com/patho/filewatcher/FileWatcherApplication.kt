@@ -1,5 +1,8 @@
 package com.patho.filewatcher
 
+import com.patho.filewatcher.service.MailService
+import com.patho.filewatcher.service.RestService
+import com.patho.filewatcher.service.WatcherService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,19 +21,20 @@ import java.util.*
 @EnableConfigurationProperties
 @EnableScheduling
 class FileWatcherApplication @Autowired constructor(
-        private val config: Config,
-        private val mainService: MainService) : CommandLineRunner {
+        private val watcher: WatcherService,
+        private val config: Config) : CommandLineRunner {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun run(vararg args: String?) {
-        if(config.schedule.enable)
+        if (config.schedule.enable)
             logger.debug("Started with cron mode...")
-        else{
+        else {
             logger.debug("Started in normal mode...")
-            mainService.watchDir()
+            watcher.watchDir()
         }
     }
+
 
 }
 
